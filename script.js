@@ -1,20 +1,42 @@
+// SELECTORS
+let startPage = document.querySelector('.start-page');
+let gameOverPage = document.querySelector('.game-over-page');
+let winPage = document.querySelector('.win-page');
+let btn = document.querySelectorAll('.btn');
+let canvasPage = document.querySelector('.canvas');
+
+// VARIABLE DECLARATION
+let score = 1;
+let lives = 4;
+let intevalId = 0;
+let isUpArrow = false;
+let isDownArrow = false;
+let imgPlayer = '/img/6530353_preview-removebg-preview.png';
+let imgEnemy =
+  '/img/99-996087_star-wars-ship-png-star-wars-fighter-png-removebg-preview (1).png';
+
 //BUILDING CANVAS
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
+let gameBcK = new Image();
+gameBcK.src = '/img/game.jpg';
 
 // CLASS DECLARATION
 class Player {
-  constructor(x, y) {
+  constructor(x, y, img) {
     this.x = x;
     this.y = y;
-    this.width = 50;
-    this.height = 50;
+    this.img = img;
+    this.width = 60;
+    this.height = 60;
   }
   drawPlayer() {
-    ctx.beginPath();
-    ctx.fillStyle = 'white';
-    ctx.closePath();
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    let playerImg = new Image();
+    playerImg.src = this.img;
+    // ctx.beginPath();
+    // ctx.fillStyle = 'white';
+    // ctx.closePath();
+    ctx.drawImage(playerImg, this.x, this.y, this.width, this.height);
   }
 }
 class Bullet {
@@ -22,7 +44,7 @@ class Bullet {
     this.x = x;
     this.y = y;
     this.color = color;
-    this.radious = 10;
+    this.radious = 5;
   }
 
   drawBullet() {
@@ -33,17 +55,10 @@ class Bullet {
     ctx.closePath();
   }
 }
-
-// VARIABLE DECLARATION
-canvas.style.backgroundColor = 'grey';
-let score = 50;
-let lives = 3;
-
-let isUpArrow = false;
-let isDownArrow = false;
-
-let mainPlayer = new Player(75, 350);
-let enemies = [new Player(1100, 150)];
+//creating players
+let mainPlayer = new Player(75, 350, imgPlayer);
+let enemies = [new Player(1200, 150, imgEnemy)];
+//creating bullets
 let bulletsMain = [];
 let bulletsEnemy = [];
 
@@ -63,20 +78,31 @@ document.addEventListener('keyup', event => {
   isUpArrow = false;
   isDownArrow = false;
 });
+btn.forEach(e => {
+  e.addEventListener('click', () => {
+    // settting default values
+    score = 1;
+    lives = 4;
+    intevalId = 0;
+    mainPlayer = new Player(75, 350, imgPlayer);
+    enemies = [new Player(1200, 150, imgEnemy)];
+    bulletsMain = [];
+    bulletsEnemy = [];
+    //display correct page
+    startPage.style.display = 'none';
+    gameOverPage.style.display = 'none';
+    winPage.style.display = 'none';
+    canvasPage.style.display = 'block';
+    //start interval again
+    intervialId = setInterval(() => {
+      requestAnimationFrame(draw);
+      collision();
+    }, 10);
+  });
+});
 
-//FUNCTION DECLARATION
-function information() {
-  ctx.beginPath();
-  ctx.fillStyle = 'black';
-  ctx.fillRect(0, canvas.height - 80, canvas.width, canvas.height);
-  ctx.closePath();
-
-  ctx.beginPath();
-  ctx.font = '15px Verdana';
-  ctx.fillStyle = 'white';
-  ctx.fillText(`Enemies alive: ${score}`, 30, canvas.height - 40);
-  ctx.closePath();
-}
+//FUNCTION DECLARATIOn
+//collision
 function collision() {
   //bullet-bullet
   bulletsMain.forEach((e, i) => {
@@ -98,32 +124,67 @@ function collision() {
       mainPlayer.y < e.y + e.height &&
       mainPlayer.y + mainPlayer.height > e.y
     ) {
-      //colision detected!! GAME OVER
+      gameOverPage.style.display = 'block';
+      canvasPage.style.display = 'none';
+      clearInterval(intervialId);
     }
   });
-  //bullet-enemy NOT WORKING
+  //bullet-enemy
   bulletsMain.forEach((e, i) => {
     enemies.forEach((el, j) => {
-      let distX = Math.abs(e.x - (el.x + el.width) / 2);
-      let distY = Math.abs(e.y - (el.y + el.height) / 2);
-      if (distX <= e.radious && distY <= e.radious) {
+      if (
+        e.x + e.radious >= el.x &&
+        e.x + e.radious <= el.x + el.width &&
+        e.y + e.radious >= el.y &&
+        e.y - e.radious <= el.y + el.height
+      ) {
+        score -= 1;
         bulletsMain.splice(i, 1);
         enemies.splice(j, 1);
+        if (score <= 0) {
+          canvasPage.style.display = 'none';
+          winPage.style.display = 'block';
+          clearInterval(intervialId);
+        }
       }
-      // if (distY <= el.height / 2) {
-      //   bulletsMain.splice(i, 1);
-      //   enemies.splice(j, 1);
-      // }
     });
   });
-
-  //bullet-main  (life -1)
+  //bullet-player
+  bulletsEnemy.forEach((e, i) => {
+    if (
+      e.x - e.radious <= mainPlayer.x + mainPlayer.width &&
+      e.x - e.radious >= mainPlayer.x &&
+      e.y - e.radious <= mainPlayer.y + mainPlayer.height &&
+      e.y + e.radious >= mainPlayer.y
+    ) {
+      if (lives <= 0) {
+        canvasPage.style.display = 'none';
+        gameOverPage.style.display = 'block';
+        clearInterval(intervialId);
+      } else {
+        lives -= 1;
+        bulletsEnemy.splice(i, 1);
+      }
+    }
+  });
 }
-
+//game
 function draw() {
   let enemyY = Math.floor(Math.random() * (canvas.height - 130));
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  information();
+  //canvas definition
+  ctx.drawImage(gameBcK, 0, 0);
+  ctx.beginPath();
+  ctx.fillStyle = 'rgba(175, 182, 189, 0.6)';
+  ctx.fillRect(0, canvas.height - 80, canvas.width, canvas.height);
+  ctx.closePath();
+  ctx.beginPath();
+  ctx.font = '30px Big Shoulders Stencil Display';
+  ctx.fillStyle = 'white';
+  ctx.fillText(`Lives: ${lives}`, 40, canvas.height - 30);
+  ctx.fillText(`Enemies: ${score}`, canvas.width - 160, canvas.height - 30);
+  ctx.closePath();
+  //Player
   mainPlayer.drawPlayer();
   if (isUpArrow && mainPlayer.y > 0) {
     mainPlayer.y -= 2;
@@ -135,18 +196,21 @@ function draw() {
     e.drawBullet();
     e.x += 2;
   });
-
+  //Enemies
   for (let i = 0; i < enemies.length; i++) {
     enemies[i].drawPlayer();
     enemies[i].x -= 2;
     if (enemies[i].x == 0) {
-      lives -= 1;
+      if (lives <= 0) {
+        canvasPage.style.display = 'none';
+        gameOverPage.style.display = 'block';
+        clearInterval(intervialId);
+      } else {
+        lives -= 1;
+      }
     }
-    if (lives == 0) {
-      //GAME OVER
-    }
-    if (enemies[i].x == 720) {
-      enemies.push(new Player(1100, enemyY));
+    if (enemies[i].x == 1000) {
+      enemies.push(new Player(1200, enemyY, imgEnemy));
     } else if (enemies[i].x == 800) {
       bulletsEnemy.push(new Bullet(790, enemies[i].y + 25, 'red'));
     }
@@ -158,11 +222,6 @@ function draw() {
 }
 
 // RUN GAME
-let intervialId = setInterval(() => {
-  requestAnimationFrame(draw);
-  collision();
-}, 10);
-
-// window.addEventListener('load', () => {
-
-// })
+window.addEventListener('load', () => {
+  startPage.style.display = 'block';
+});

@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Big Shoulders Stencil Display';
+}
+img {
+  width: 1000px;
+  height: 700px;
+  position: absolute;
+}
+.relative {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.relative h1 {
+  text-align: center;
+  font-size: 70px;
+  font-weight: bold;
+  padding: 100px 0 0 0;
+  margin: 0;
+}
+.relative h2 {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0;
+  padding: 20px 0;
+}
+.relative ul {
+  background-color: rgb(181, 194, 196, 0.7);
+  margin: 0;
+  padding: 30px;
+}
+.relative i {
+  margin: 10px 5px;
+}
+.relative li {
+  list-style: none;
+  font-size: 30px;
+  font-weight: 700;
+}
+.btn {
+  -webkit-border-radius: 56;
+  -moz-border-radius: 56;
+  border-radius: 56px;
+  color: #ffffff;
+  font-size: 40px;
+  background: #4aa4e0;
+  padding: 10px 20px 10px 20px;
+  border: solid #1f628d 5px;
+  text-decoration: none;
+  margin-top: 40px;
+}
+.btn:hover {
+  background: #2a6d96;
+  text-decoration: none;
+}
+.game-over-page h1 {
+  color: rgb(179, 58, 58);
+}
+.game-over-page h2 {
+  color: rgb(207, 68, 68);
+}
+.win-page h1 {
+  color: rgb(255, 255, 255);
+  margin-bottom: 50px;
+}
+.start-page {
+  display: none;
+}
+.game-over-page {
+  display: none;
+}
+.win-page {
+  display: none;
+}
+.canvas {
+  display: none;
+}
