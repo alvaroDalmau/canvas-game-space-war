@@ -6,8 +6,12 @@ let btn = document.querySelectorAll('.btn');
 let canvasPage = document.querySelector('.canvas');
 
 // VARIABLE DECLARATION
-let score = 1;
-let lives = 4;
+let bulletsMain = [];
+let bulletsEnemy = [];
+let mainPlayer = 0;
+let enemies = [];
+let score = 0;
+let lives = 0;
 let intevalId = 0;
 let isUpArrow = false;
 let isDownArrow = false;
@@ -55,12 +59,6 @@ class Bullet {
     ctx.closePath();
   }
 }
-//creating players
-let mainPlayer = new Player(75, 350, imgPlayer);
-let enemies = [new Player(1200, 150, imgEnemy)];
-//creating bullets
-let bulletsMain = [];
-let bulletsEnemy = [];
 
 //EVENT LISTENER DECLARATION
 document.addEventListener('keydown', event => {
@@ -80,15 +78,15 @@ document.addEventListener('keyup', event => {
 });
 btn.forEach(e => {
   e.addEventListener('click', () => {
-    // settting default values
-    score = 1;
-    lives = 4;
+    // settting values
+    score = 20;
+    lives = 3;
     intevalId = 0;
     mainPlayer = new Player(75, 350, imgPlayer);
     enemies = [new Player(1200, 150, imgEnemy)];
     bulletsMain = [];
     bulletsEnemy = [];
-    //display correct page
+    //display page
     startPage.style.display = 'none';
     gameOverPage.style.display = 'none';
     winPage.style.display = 'none';
@@ -97,7 +95,7 @@ btn.forEach(e => {
     intervialId = setInterval(() => {
       requestAnimationFrame(draw);
       collision();
-    }, 10);
+    }, 7);
   });
 });
 
@@ -121,8 +119,8 @@ function collision() {
     if (
       mainPlayer.x < e.x + e.width &&
       mainPlayer.x + mainPlayer.width > e.x &&
-      mainPlayer.y < e.y + e.height &&
-      mainPlayer.y + mainPlayer.height > e.y
+      mainPlayer.y - 8 < e.y - 8 + e.height - 8 &&
+      mainPlayer.y - 8 + mainPlayer.height - 8 > e.y - 8
     ) {
       gameOverPage.style.display = 'block';
       canvasPage.style.display = 'none';
@@ -135,8 +133,8 @@ function collision() {
       if (
         e.x + e.radious >= el.x &&
         e.x + e.radious <= el.x + el.width &&
-        e.y + e.radious >= el.y &&
-        e.y - e.radious <= el.y + el.height
+        e.y + e.radious >= el.y + 8 &&
+        e.y - e.radious <= el.y - 8 + el.height - 8
       ) {
         score -= 1;
         bulletsMain.splice(i, 1);
@@ -186,20 +184,24 @@ function draw() {
   ctx.closePath();
   //Player
   mainPlayer.drawPlayer();
-  if (isUpArrow && mainPlayer.y > 0) {
+  if (isUpArrow && mainPlayer.y > -8) {
     mainPlayer.y -= 2;
   }
   if (isDownArrow && mainPlayer.y < canvas.height - 130) {
     mainPlayer.y += 2;
   }
-  bulletsMain.forEach(e => {
+  // bullets player
+  bulletsMain.forEach((e, i) => {
     e.drawBullet();
     e.x += 2;
+    if (e.x >= 1000) {
+      bulletsMain.splice(i, 1);
+    }
   });
   //Enemies
   for (let i = 0; i < enemies.length; i++) {
     enemies[i].drawPlayer();
-    enemies[i].x -= 2;
+    enemies[i].x -= 1;
     if (enemies[i].x == 0) {
       if (lives <= 0) {
         canvasPage.style.display = 'none';
@@ -209,15 +211,16 @@ function draw() {
         lives -= 1;
       }
     }
-    if (enemies[i].x == 1000) {
-      enemies.push(new Player(1200, enemyY, imgEnemy));
+    if (enemies[i].x == 1100) {
+      enemies.push(new Player(1300, enemyY, imgEnemy));
     } else if (enemies[i].x == 800) {
       bulletsEnemy.push(new Bullet(790, enemies[i].y + 25, 'red'));
     }
   }
+  //bullets enemy
   bulletsEnemy.forEach(e => {
     e.drawBullet();
-    e.x -= 3;
+    e.x -= 2;
   });
 }
 

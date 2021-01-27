@@ -52,6 +52,7 @@ img {
   border: solid #1f628d 5px;
   text-decoration: none;
   margin-top: 40px;
+  cursor: pointer;
 }
 .btn:hover {
   background: #2a6d96;
