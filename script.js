@@ -88,7 +88,7 @@ btn.forEach(e => {
   e.addEventListener('click', () => {
     // settting values
     score = 2;
-    lives = 1;
+    lives = 2;
     intevalId = 0;
     mainPlayer = new Player(75, 350, imgPlayer);
     enemies = [new Player(1200, 150, imgEnemy)];
