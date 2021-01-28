@@ -15,25 +15,6 @@ let lives = 0;
 let intevalId = 0;
 let isUpArrow = false;
 let isDownArrow = false;
-
-// class Animation {
-//   constructor(x, y, radious) {
-//     this.x = x;
-//     this.y = y;
-//     this.radious = radious;
-//   }
-
-//   draw() {
-//     ctx.beginPath();
-//     ctx.strokeStyle = 'green';
-//     ctx.arc(this.x, this.y, this.radious, 0, 2 * Math.PI);
-//     ctx.stroke();
-//     ctx.closePath();
-//   }
-// }
-// let y = new Animation(100, 100, 50);
-// y.draw();
-
 //img declaration
 let imgPlayer = 'img/6530353_preview-removebg-preview.png';
 let imgEnemy =
@@ -53,6 +34,7 @@ let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 let gameBcK = new Image();
 gameBcK.src = 'img/game.jpg';
+
 // CLASS DECLARATION
 class Player {
   constructor(x, y, img) {
@@ -238,7 +220,7 @@ function draw() {
     enemies[i].drawPlayer();
     enemies[i].x -= 1;
     if (enemies[i].x == 0) {
-      if (lives <= 0) {
+      if (lives == 1) {
         canvasPage.style.display = 'none';
         gameOverPage.style.display = 'block';
         gameOverSound.play();
