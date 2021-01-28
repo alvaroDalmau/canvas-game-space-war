@@ -15,16 +15,44 @@ let lives = 0;
 let intevalId = 0;
 let isUpArrow = false;
 let isDownArrow = false;
-let imgPlayer = '/img/6530353_preview-removebg-preview.png';
+
+// class Animation {
+//   constructor(x, y, radious) {
+//     this.x = x;
+//     this.y = y;
+//     this.radious = radious;
+//   }
+
+//   draw() {
+//     ctx.beginPath();
+//     ctx.strokeStyle = 'green';
+//     ctx.arc(this.x, this.y, this.radious, 0, 2 * Math.PI);
+//     ctx.stroke();
+//     ctx.closePath();
+//   }
+// }
+// let y = new Animation(100, 100, 50);
+// y.draw();
+
+//img declaration
+let imgPlayer = 'img/6530353_preview-removebg-preview.png';
 let imgEnemy =
-  '/img/99-996087_star-wars-ship-png-star-wars-fighter-png-removebg-preview (1).png';
+  'img/99-996087_star-wars-ship-png-star-wars-fighter-png-removebg-preview (1).png';
+//sound declaration
+let winSound = new Audio();
+winSound.src = 'audio/start.mp3';
+let crashSound = new Audio();
+crashSound.src = 'audio/crashenemy.mp3';
+let shootSound = new Audio();
+shootSound.src = 'audio/shoot.mp3';
+let gameOverSound = new Audio();
+gameOverSound.src = 'audio/gameover.mp3';
 
 //BUILDING CANVAS
 let canvas = document.querySelector('canvas');
 let ctx = canvas.getContext('2d');
 let gameBcK = new Image();
-gameBcK.src = '/img/game.jpg';
-
+gameBcK.src = 'img/game.jpg';
 // CLASS DECLARATION
 class Player {
   constructor(x, y, img) {
@@ -37,9 +65,6 @@ class Player {
   drawPlayer() {
     let playerImg = new Image();
     playerImg.src = this.img;
-    // ctx.beginPath();
-    // ctx.fillStyle = 'white';
-    // ctx.closePath();
     ctx.drawImage(playerImg, this.x, this.y, this.width, this.height);
   }
 }
@@ -69,6 +94,7 @@ document.addEventListener('keydown', event => {
     isUpArrow = true;
     isDownArrow = false;
   } else if (event.keyCode == '32') {
+    shootSound.play();
     bulletsMain.push(new Bullet(mainPlayer.x + 60, mainPlayer.y + 25, 'green'));
   }
 });
@@ -79,8 +105,8 @@ document.addEventListener('keyup', event => {
 btn.forEach(e => {
   e.addEventListener('click', () => {
     // settting values
-    score = 20;
-    lives = 3;
+    score = 2;
+    lives = 1;
     intevalId = 0;
     mainPlayer = new Player(75, 350, imgPlayer);
     enemies = [new Player(1200, 150, imgEnemy)];
@@ -91,6 +117,7 @@ btn.forEach(e => {
     gameOverPage.style.display = 'none';
     winPage.style.display = 'none';
     canvasPage.style.display = 'block';
+    winSound.pause();
     //start interval again
     intervialId = setInterval(() => {
       requestAnimationFrame(draw);
@@ -100,7 +127,7 @@ btn.forEach(e => {
 });
 
 //FUNCTION DECLARATIOn
-//collision
+//collisions
 function collision() {
   //bullet-bullet
   bulletsMain.forEach((e, i) => {
@@ -123,6 +150,7 @@ function collision() {
       mainPlayer.y - 8 + mainPlayer.height - 8 > e.y - 8
     ) {
       gameOverPage.style.display = 'block';
+      gameOverSound.play();
       canvasPage.style.display = 'none';
       clearInterval(intervialId);
     }
@@ -134,14 +162,21 @@ function collision() {
         e.x + e.radious >= el.x &&
         e.x + e.radious <= el.x + el.width &&
         e.y + e.radious >= el.y + 8 &&
-        e.y - e.radious <= el.y - 8 + el.height - 8
+        e.y - e.radious <= el.y + 8 + el.height - 8
       ) {
+        crashSound.play();
         score -= 1;
         bulletsMain.splice(i, 1);
         enemies.splice(j, 1);
         if (score <= 0) {
           canvasPage.style.display = 'none';
           winPage.style.display = 'block';
+          winSound.play();
+          clearInterval(intervialId);
+        }
+        if (lives <= 0) {
+          canvasPage.style.display = 'none';
+          gameOverPage.style.display = 'block';
           clearInterval(intervialId);
         }
       }
@@ -152,16 +187,16 @@ function collision() {
     if (
       e.x - e.radious <= mainPlayer.x + mainPlayer.width &&
       e.x - e.radious >= mainPlayer.x &&
-      e.y - e.radious <= mainPlayer.y + mainPlayer.height &&
-      e.y + e.radious >= mainPlayer.y
+      e.y - e.radious <= mainPlayer.y + 8 + mainPlayer.height - 8 &&
+      e.y + e.radious >= mainPlayer.y + 8
     ) {
-      if (lives <= 0) {
+      lives -= 1;
+      bulletsEnemy.splice(i, 1);
+      if (lives == 0) {
         canvasPage.style.display = 'none';
         gameOverPage.style.display = 'block';
+        gameOverSound.play();
         clearInterval(intervialId);
-      } else {
-        lives -= 1;
-        bulletsEnemy.splice(i, 1);
       }
     }
   });
@@ -194,7 +229,7 @@ function draw() {
   bulletsMain.forEach((e, i) => {
     e.drawBullet();
     e.x += 2;
-    if (e.x >= 1000) {
+    if (e.x >= canvas.width) {
       bulletsMain.splice(i, 1);
     }
   });
@@ -206,6 +241,7 @@ function draw() {
       if (lives <= 0) {
         canvasPage.style.display = 'none';
         gameOverPage.style.display = 'block';
+        gameOverSound.play();
         clearInterval(intervialId);
       } else {
         lives -= 1;

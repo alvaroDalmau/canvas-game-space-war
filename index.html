@@ -15,12 +15,15 @@
       integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
       crossorigin="anonymous"
     />
+    <!--fixin erro favicon-->
+    <link rel="icon" href="/img/icon.svg" />
   </head>
   <body>
+    <!--START PAGE-->
     <div class="start-page">
       <img
         class="background"
-        src="/img/background.png"
+        src="img/background.png"
         alt="background image"
       />
       <div class="relative">
@@ -40,8 +43,9 @@
         <button class="btn">Play</button>
       </div>
     </div>
+    <!--GAME OVER PAGE-->
     <div class="game-over-page">
-      <img class="background" src="/img/game-over.jpg" alt="background image" />
+      <img class="background" src="img/game-over.jpg" alt="background image" />
       <div class="relative">
         <h1>
           <i class="fas fa-exclamation-triangle"></i>&nbsp;GAME OVER&nbsp;<i
@@ -63,14 +67,26 @@
         <button class="btn">Play</button>
       </div>
     </div>
+    <!--WIN PAGE-->
     <div class="win-page">
-      <img class="background" src="/img/win.jpg" alt="background image" />
+      <img class="background" src="img/win.jpg" alt="background image" />
       <div class="relative">
         <h1>CONGRATULATIONS <br />YOU HAVE FLED !!</h1>
+        <div class="container-win">
+          <h2>You are now one of us!</h2>
+          <img
+            class="team-valor"
+            src="img/team-valor.png"
+            alt="team valor logo"
+          />
+        </div>
         <button class="btn">Play</button>
       </div>
     </div>
+    <!--CANVAS-->
     <canvas class="canvas" width="1000" height="700"></canvas>
-    <script src="/script.js"></script>
+
+    <!--JS-->
+    <script src="script.js"></script>
   </body>
 </html>

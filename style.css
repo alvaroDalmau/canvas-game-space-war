@@ -1,3 +1,4 @@
+/*GENERAL */
 body {
   margin: 0;
   padding: 0;
@@ -8,11 +9,14 @@ img {
   height: 700px;
   position: absolute;
 }
+
+/*GLOBAL PAGES*/
 .relative {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 1000px;
 }
 .relative h1 {
   text-align: center;
@@ -58,16 +62,36 @@ img {
   background: #2a6d96;
   text-decoration: none;
 }
+
+/*GAME OVER PAGE*/
 .game-over-page h1 {
   color: rgb(179, 58, 58);
 }
 .game-over-page h2 {
   color: rgb(207, 68, 68);
 }
+
+/*WIN PAGE*/
 .win-page h1 {
   color: rgb(255, 255, 255);
-  margin-bottom: 50px;
+  margin-bottom: 0;
 }
+.win-page h2 {
+  color: rgb(218, 37, 37);
+  margin-bottom: 0;
+}
+.team-valor {
+  height: 150px;
+  width: 100px;
+  padding-left: 110px;
+}
+.container-win {
+  background-color: rgba(255, 255, 255, 0.664);
+  height: 250px;
+  padding: 0 50px;
+}
+
+/* DISPLAY DEFAULT */
 .start-page {
   display: none;
 }
